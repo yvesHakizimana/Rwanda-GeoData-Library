@@ -7,7 +7,11 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class RwandaVillageValidator implements ConstraintValidator<ValidRwandaVillage, String> {
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        return RwandaGeoData.getAllVillages().contains(value);
+    public boolean isValid(String villageName, ConstraintValidatorContext context) {
+        return RwandaGeoData
+                .getAllVillages()
+                .stream()
+                .anyMatch(village -> village.equals(villageName));
+
     }
 }
