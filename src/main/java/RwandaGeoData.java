@@ -2,19 +2,51 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RwandaGeoData {
 
-    private static LinkedHashMap<String,LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>>> provinceMap = new LinkedHashMap<>();
-    private static LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> districtMap = new LinkedHashMap<>();
-    private static LinkedHashMap<String, LinkedHashMap<String, List<String>>> sectorMap = new LinkedHashMap<>();
-    private static LinkedHashMap<String, List<String>> cellMap = new LinkedHashMap<>();
-    private static List<String> villages = new ArrayList<>();
+    private static final String dataFileName = "rwanda-administrative-structure-data.csv";
+    private static final LinkedHashMap<String,LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>>> provinceMap = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> districtMap = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, LinkedHashMap<String, List<String>>> sectorMap = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, List<String>> cellMap = new LinkedHashMap<>();
+    private static final List<String> villages = new ArrayList<>();
 
-    public static void loadFirstFile(String fileName) throws FileNotFoundException {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+    public RwandaGeoData() {
+        try {
+            loadRwandaGeoData();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Data loading failed, try again.");
+        }
+    }
+
+    public static Set<String> getAllProvinces(){
+        return provinceMap.keySet();
+    }
+
+    public static Set<String> getAllDistricts(){
+        return districtMap.keySet().stream().map(key -> key.split("\\|")[1]).collect(Collectors.toSet());
+    }
+
+    public static List<String> getAllSectors(){
+        return sectorMap.keySet().stream().map(key -> key.split("\\|")[2]).collect(Collectors.toList());
+    }
+
+    public static List<String> getAllCells(){
+        return cellMap.keySet().stream().map(key -> key.split("\\|")[3]).collect(Collectors.toList());
+    }
+
+    public static List<String> getAllVillages(){
+        return villages;
+    }
+
+    private static void loadRwandaGeoData() throws FileNotFoundException {
+        try (BufferedReader br = new BufferedReader(new FileReader(dataFileName))) {
             String line;
             while((line = br.readLine()) != null) {
                 String[] data = line.split(",");
@@ -65,36 +97,6 @@ public class RwandaGeoData {
 
     }
 
-    public static Set<String> getAllProvinces(){
-        return provinceMap.keySet();
-    }
-
-    public static Set<String> getAllDistricts(){
-        return districtMap.keySet().stream().map(key -> key.split("\\|")[1]).collect(Collectors.toSet());
-    }
-
-    public static List<String> getAllSectors(){
-        return sectorMap.keySet().stream().map(key -> key.split("\\|")[2]).collect(Collectors.toList());
-    }
-
-    public static List<String> getAllCells(){
-        return cellMap.keySet().stream().map(key -> key.split("\\|")[3]).collect(Collectors.toList());
-    }
-
-    public static List<String> getAllVillages(){
-        return villages;
-    }
-
     public static  void main(String[] args) throws FileNotFoundException {
-        loadFirstFile("rwanda-administrative-structure-data.csv");
-
-        System.out.println(provinceMap.keySet());
-        districtMap
-                .keySet()
-                .stream().map(key -> key.split("\\|")[1])
-                .forEach(System.out::println);
-        System.out.println(sectorMap.size());
-        System.out.println(cellMap.size());
-        System.out.println(villages.size());
     }
 }
