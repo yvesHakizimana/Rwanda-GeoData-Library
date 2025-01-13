@@ -41,9 +41,13 @@
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/octocat/hello-world</url>
+            <name>Github</name>
+            <url>https://maven.pkg.github.com/yvesHakizimana/Rwanda-GeoData-Library</url>
         </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/yvesHakizimana/Rwanda-GeoData-Library</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <properties>
