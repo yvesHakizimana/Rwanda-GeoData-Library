@@ -84,7 +84,7 @@ We welcome contributions! To contribute:
 
 1. Fork and clone the repository:
    ```sh
-   git clone https://github.com/yvesHakizimana/rwandageodata.git
+   git clone https://github.com/yvesHakizimana/Rwanda-GeoData-Library
    ```
 2. Create a new branch for your feature:
    ```sh
