@@ -116,4 +116,4 @@ We welcome contributions! To contribute:
 This library is licensed under the [Apache License](LICENSE).
 
 
-For more information, documentation, or support, please contact [yvhakizimana123@gmail.com/github.com/yvesHakizimana].
+For more information, documentation, or support, please contact yvhakizimana123@gmail.com/github.com/yvesHakizimana.
