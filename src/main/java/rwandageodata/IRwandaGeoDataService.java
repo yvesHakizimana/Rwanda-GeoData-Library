@@ -97,7 +97,29 @@ public interface IRwandaGeoDataService {
      */
     List<String> getAllCells(String provinceName, String districtName);
 
+    /**
+     * Retrieves all villages within a specified district and sector
+     *
+     * @param districtName name of the district
+     * @param sectorName name of sector
+     * @return a list of all villages present in the specified district and sector.
+     */
+    List<String> getAllVillages(String districtName, String sectorName);
+
+    /**
+     * Retrieves all villages within a specified cell
+     *
+     * @param cellName name of the cell
+     * @return a list of all villages within a specified cell.
+     */
+    List<String> getAllVillages(String cellName);
 
 
+    /**
+     * Returns true if the {@link Location} is a valid sequence or province, district, sector, cell and village
+     *
+     * @param location this is the {@link Location} object which contains the provinceName, districtName, sectorName, cellName and also villageNames.
+     * @return true if the location is validly else false.
+     */
     boolean locationExists(Location location);
 }
