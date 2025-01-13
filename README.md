@@ -14,30 +14,48 @@ The **Rwanda Geo Data Library** is a Java library designed for accessing, managi
 The library provides the following key methods:
 
 ### Province-Level Operations
+
 - `getAllProvinces()`: Retrieve a set of all provinces in Rwanda.
 
 ### District-Level Operations
+
 - `getAllDistricts()`: Retrieve a set of all districts in Rwanda.
 - `getAllDistricts(String provinceName)`: Retrieve all districts within a specific province.
 
 ### Sector-Level Operations
+
 - `getAllSectors()`: Retrieve a list of all sectors in Rwanda.
 - `getAllSectors(String districtName)`: Retrieve all sectors within a specific district.
 - `getAllSectors(String provinceName, String districtName)`: Retrieve all sectors within a specific province and district.
 
 ### Cell-Level Operations
+
 - `getAllCells()`: Retrieve a list of all cells in Rwanda.
 - `getAllCells(String sectorName)`: Retrieve all cells within a specific sector.
 - `getAllCells(String provinceName, String districtName, String sectorName)`: Retrieve all cells within a specific province, district, and sector.
 - `getAllCells(String provinceName, String districtName)`: Retrieve all cells within a specific province and district.
 
 ### Village-Level Operations
+
 - `getAllVillages()`: Retrieve a list of all villages in Rwanda.
 - `getAllVillages(String districtName, String sectorName)`: Retrieve all villages within a specific district and sector.
 - `getAllVillages(String cellName)`: Retrieve all villages within a specific cell.
 
 ### Location Validation
-- `locationExists(Location location)`: Validate a complete location sequence (province, district, sector, cell, and village).
+
+This library includes custom validation annotations to ensure the integrity of geographical names across Rwanda's administrative hierarchy. The following validation annotations can be used to validate the names of provinces, districts, sectors, cells, and villages:
+
+- `@ValidRwandaProvince`: Validates that a field contains a valid Rwanda province name (e.g., `EAST`, `WEST`, `SOUTH`, `NORTH`, or `KIGALI`).
+- `@ValidRwandaDistrict`: Validates that a field contains a valid Rwanda district name.
+- `@ValidRwandaSector`: Validates that a field contains a valid Rwanda sector name.
+- `@ValidRwandaCell`: Validates that a field contains a valid Rwanda cell name.
+- `@ValidRwandaVillage`: Validates that a field contains a valid Rwanda village name.
+
+These annotations are implemented using Jakarta Bean Validation, and can be easily applied to Java classes or entities that require validation.
+
+Additionally, the method:
+
+- `locationExists(Location location)`: Validates a complete location sequence (province, district, sector, cell, and village).
 
 ## Data Loading
 
@@ -95,8 +113,7 @@ We welcome contributions! To contribute:
 
 ## License
 
-This library is licensed under the [Apache](LICENSE).
+This library is licensed under the [Apache License](LICENSE).
 
 
-For more information, documentation, or support, please contact Yves HAKIZIMANA.
-
+For more information, documentation, or support, please contact [yvhakizimana123@gmail.com/github.com/yvesHakizimana].
