@@ -1,119 +1,167 @@
-# Rwanda Geo Data Library
+# Rwanda GeoData Library
 
-The **Rwanda Geo Data Library** is a Java library designed for accessing, managing, and validating Rwanda's hierarchical geographical data. This library provides a structured way to retrieve information about provinces, districts, sectors, cells, and villages, enabling developers to work with Rwanda's geo-structure efficiently.
+The **Rwanda GeoData Library** is a powerful tool for managing Rwanda's geographical structure. It provides an efficient way to retrieve and validate provinces, districts, sectors, cells, and villages, making it easier for developers to build solutions without the need for a separate database for geographical data.
+
+---
 
 ## Features
 
-- **Hierarchical Data Access**: Retrieve geographical entities at all levels, from provinces to villages.
-- **Flexible Queries**: Retrieve data using parent-child relationships (e.g., districts within a province, sectors within a district).
-- **Validation**: Validate geographical locations to ensure consistency and correctness.
-- **Efficient Data Loading**: The library supports preloading of geo-data for optimized querying.
+- **Validation**: Use annotations to validate geographical names directly in your application.
+- **Data Retrieval**: Access Rwanda's complete geo-structure programmatically.
+- **Seamless Integration**: Easily integrate with backend and frontend systems.
+- **Performance-Oriented**: Eliminate redundant database queries, ensuring optimized performance.
 
-## Core Functionalities
-
-The library provides the following key methods:
-
-### Province-Level Operations
-
-- `getAllProvinces()`: Retrieve a set of all provinces in Rwanda.
-
-### District-Level Operations
-
-- `getAllDistricts()`: Retrieve a set of all districts in Rwanda.
-- `getAllDistricts(String provinceName)`: Retrieve all districts within a specific province.
-
-### Sector-Level Operations
-
-- `getAllSectors()`: Retrieve a list of all sectors in Rwanda.
-- `getAllSectors(String districtName)`: Retrieve all sectors within a specific district.
-- `getAllSectors(String provinceName, String districtName)`: Retrieve all sectors within a specific province and district.
-
-### Cell-Level Operations
-
-- `getAllCells()`: Retrieve a list of all cells in Rwanda.
-- `getAllCells(String sectorName)`: Retrieve all cells within a specific sector.
-- `getAllCells(String provinceName, String districtName, String sectorName)`: Retrieve all cells within a specific province, district, and sector.
-- `getAllCells(String provinceName, String districtName)`: Retrieve all cells within a specific province and district.
-
-### Village-Level Operations
-
-- `getAllVillages()`: Retrieve a list of all villages in Rwanda.
-- `getAllVillages(String districtName, String sectorName)`: Retrieve all villages within a specific district and sector.
-- `getAllVillages(String cellName)`: Retrieve all villages within a specific cell.
-
-### Location Validation
-
-This library includes custom validation annotations to ensure the integrity of geographical names across Rwanda's administrative hierarchy. The following validation annotations can be used to validate the names of provinces, districts, sectors, cells, and villages:
-
-- `@ValidRwandaProvince`: Validates that a field contains a valid Rwanda province name (e.g., `EAST`, `WEST`, `SOUTH`, `NORTH`, or `KIGALI`).
-- `@ValidRwandaDistrict`: Validates that a field contains a valid Rwanda district name.
-- `@ValidRwandaSector`: Validates that a field contains a valid Rwanda sector name.
-- `@ValidRwandaCell`: Validates that a field contains a valid Rwanda cell name.
-- `@ValidRwandaVillage`: Validates that a field contains a valid Rwanda village name.
-
-These annotations are implemented using Jakarta Bean Validation, and can be easily applied to Java classes or entities that require validation.
-
-Additionally, the method:
-
-- `locationExists(Location location)`: Validates a complete location sequence (province, district, sector, cell, and village).
-
-## Data Loading
-
-The library uses a preloaded data source to provide fast and efficient access to Rwanda’s geo-structure. Ensure that the data is correctly loaded and structured for optimal performance.
+---
 
 ## Installation
 
-To use the **Rwanda Geo Data Library** in your Java project:
+Add the library to your Maven project using the following dependency:
 
-1. Download the `rwandageodata.jar` file from the repository.
-2. Include the `.jar` file in your project's classpath.
+```xml
+<dependency>
+    <groupId>io.github.yveshakizimana</groupId>
+    <artifactId>rwanda-geodata-utils</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+---
 
 ## Usage
 
-Here is an example of how to use the library:
+### 1. **Validation Using Annotations**
+
+This library provides annotation-based validation to ensure that geographic data conforms to Rwanda's structure.
+
+#### Example: Validating a User Profile
 
 ```java
-import rwandageodata.IRwandaGeoDataService;
-import rwandageodata.Location;
+package com.example.services;
+
+import rwandageodata.constraints.*;
+
+public record UserProfile(
+        RwandaLocation rwandaLocation,
+
+        @ValidRwandaProvince(message = "Invalid Rwandan province.")
+        String provinceName,
+
+        @ValidRwandaDistrict(message = "Invalid Rwandan district.")
+        String districtName,
+
+        @ValidRwandaSector(message = "Invalid Rwandan sector.")
+        String sectorName,
+
+        @ValidRwandaCell(message = "Invalid Rwandan cell.")
+        String cellName,
+
+        @ValidRwandaVillage(message = "Invalid Rwandan village.")
+        String villageName
+) {}
+```
+
+### 2. **Validation of an Entire Location**
+
+You can validate a complete location object by using the `@ValidRwandaLocation` annotation.
+
+```java
+package com.example.services;
+
+import rwandageodata.constraints.ValidRwandaLocation;
+
+@ValidRwandaLocation
+public record RwandaLocation(
+        String provinceName,
+        String districtName,
+        String sectorName,
+        String cellName,
+        String villageName
+) {}
+```
+
+---
+
+### 3. **Retrieving Geographical Data**
+
+For developers needing to retrieve Rwanda's geo-structure without relying on external databases, the library offers utility methods.
+
+#### Example: Using the `RwandaGeoData` Service
+
+```java
+package com.example.services;
+
+import rwandageodata.RwandaGeoData;
 import rwandageodata.RwandaGeoDataFactory;
+
 import java.util.List;
+import java.util.Set;
 
-public class Main {
-    public static void main(String[] args) {
-        IRwandaGeoDataService geoDataService = RwandaGeoDataFactory.create();
+public class RwandaService {
 
-        // Retrieve all provinces
-        System.out.println("Provinces: " + geoDataService.getAllProvinces());
+    private final RwandaGeoData rwandaGeoData;
 
-        // Retrieve districts in a province
-        System.out.println("Districts in Kigali: " + geoDataService.getAllDistricts("Kigali"));
+    // Initialize the RwandaGeoData instance
+    public RwandaService() {
+        rwandaGeoData = RwandaGeoDataFactory.create();
+    }
 
-        // Validate a location
-        Location location = new Location("Kigali", "Nyarugenge", "Kiyovu", "Kiyovu Cell", "Village 1");
-        boolean isValid = geoDataService.locationExists(location);
-        System.out.println("Is location valid? " + isValid);
+    // Retrieve all provinces
+    public Set<String> getAllProvinces() {
+        return rwandaGeoData.getAllProvinces();
+    }
+
+    // Retrieve districts for a specific province
+    public Set<String> getAllDistricts(String provinceName) {
+        return rwandaGeoData.getAllDistricts(provinceName);
+    }
+
+    // Retrieve sectors for a specific district
+    public List<String> getAllSectors(String districtName) {
+        return rwandaGeoData.getAllSectors(districtName);
+    }
+
+    // Retrieve cells for a specific sector
+    public List<String> getAllCells(String sectorName) {
+        return rwandaGeoData.getAllCells(sectorName);
+    }
+
+    // Retrieve villages for a specific cell
+    public List<String> getAllVillages(String cellName) {
+        return rwandaGeoData.getAllVillages(cellName);
     }
 }
 ```
 
-## Contribution
+---
 
-We welcome contributions! To contribute:
+## Why Use This Library?
 
-1. Fork and clone the repository:
-   ```sh
-   git clone https://github.com/yvesHakizimana/Rwanda-GeoData-Library
-   ```
-2. Create a new branch for your feature:
-   ```sh
-   git checkout -b feature-name
-   ```
-3. Commit your changes and push to your fork.
-4. Submit a pull request for review.
+- **Backend-Frontend Integration**: Query and validate geographic data between backend and frontend seamlessly.
+- **Eliminate Database Dependencies**: No need to maintain a separate database for Rwanda's geo-structure.
+- **Ready to Use**: Simplifies development with ready-to-use annotations and data retrieval methods.
+- **Optimized Performance**: Efficient data handling minimizes performance impacts.
+
+---
+
+## Contributing
+
+Contributions are welcome! Fork the repository, make your changes, and submit a pull request. If you encounter any issues or have suggestions, feel free to open an issue.
+
+---
 
 ## License
 
-This library is licensed under the [Apache License](LICENSE).
+This project is licensed under the Apache License. See the [LICENSE](LICENSE) file for details.
 
+---
 
-For more information, documentation, or support, please contact yvhakizimana123@gmail.com/github.com/yvesHakizimana.
+## Contact
+
+For questions or feedback, reach out to:
+
+- **Author**: Yves Hakizimana
+- **GitHub**: [@yveshakizimana](https://github.com/yveshakizimana)
+
+---
+
+Start building powerful applications with the **Rwanda GeoData Library** today! 🎉
